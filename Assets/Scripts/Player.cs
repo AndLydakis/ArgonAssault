@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     [SerializeField] float yLimit = 4f;
     [Tooltip("FX prefab")] [SerializeField] GameObject deathFx;
 
+    [Header("Weapons")]
+    [SerializeField] GameObject[] weapons;
+
     [Header("Screen-position Based")]
     [SerializeField] float positionPitchFactor = -5f;
     [SerializeField] float positionYawFactor = 5f;
@@ -22,13 +25,10 @@ public class Player : MonoBehaviour
     [SerializeField] float controlPitchFactor = -20f;
     [SerializeField] float controlRollFactor = -20f;
 
-    [SerializeField] float yawLimit = 0.1f;
-    [SerializeField] float rollLimit = 0.1f;
-
     float xThrow, yThrow;
     bool controlsEnabled = true;
     void Start() {
-
+        setWeapons(false);
     }
     void Update() {
         if (!controlsEnabled) return;
@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
         yThrow = CrossPlatformInputManager.GetAxis("Vertical");
         ProcessTranslation();
         ProcessRotation();
+        ProcessFiring();
     }
 
     void ProcessTranslation() {
@@ -55,6 +56,21 @@ public class Player : MonoBehaviour
         float roll = xThrow * controlRollFactor;
 
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+    }
+
+    void ProcessFiring() {
+        if (CrossPlatformInputManager.GetButton("Fire")) {
+            setWeapons(true);
+        }
+        else {
+            setWeapons(false);
+        }
+    }
+
+    void setWeapons(bool mode) {
+        foreach (GameObject weapon in weapons) {
+            weapon.SetActive(mode);
+        }
     }
 
     void DisableControls() {
