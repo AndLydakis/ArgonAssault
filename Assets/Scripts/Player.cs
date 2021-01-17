@@ -69,7 +69,8 @@ public class Player : MonoBehaviour
 
     void setWeapons(bool mode) {
         foreach (GameObject weapon in weapons) {
-            weapon.SetActive(mode);
+            var particles = weapon.GetComponent<ParticleSystem>().emission;
+            particles.enabled = mode;
         }
     }
 
